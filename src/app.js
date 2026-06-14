@@ -237,6 +237,13 @@ createApp({
       activeTab.value = "matches";
     }
 
+    function openParticipantTab() {
+      activeTab.value = "participant";
+      if (selectedParticipantId.value === "all") {
+        selectedParticipantId.value = db.value?.participants?.[0]?.id || "all";
+      }
+    }
+
     async function refreshResults(forceRefresh = false) {
       if (!db.value) return;
       if (forceRefresh) clearApiResultsCache();
@@ -279,6 +286,7 @@ createApp({
       groups,
       isMatchDrawerOpen,
       matchPredictions,
+      openParticipantTab,
       participantDetail,
       participantsById,
       ranking,

@@ -56,7 +56,7 @@
           <button :class="{ active: activeTab === 'matches' }" @click="activeTab = 'matches'">Partidos</button>
           <button :class="{ active: activeTab === 'ranking' }" @click="activeTab = 'ranking'">Tabla</button>
           <button :class="{ active: activeTab === 'journeys' }" @click="activeTab = 'journeys'">Jornadas</button>
-          <button :class="{ active: activeTab === 'participant' }" @click="activeTab = 'participant'">Participante</button>
+          <button :class="{ active: activeTab === 'participant' }" @click="openParticipantTab">Participante</button>
         </nav>
 
         <section v-show="activeTab === 'ranking'" class="panel">
@@ -185,7 +185,7 @@
               <option v-for="participant in db.participants" :key="participant.id" :value="participant.id">{{ participant.name }}</option>
             </select>
           </div>
-          <div v-if="participantDetail" class="table-wrap">
+          <div v-if="participantDetail" class="table-wrap participant-table">
             <table>
               <thead>
                 <tr>
@@ -209,6 +209,7 @@
               </tbody>
             </table>
           </div>
+          <p v-else class="empty-state">Selecciona un participante para ver sus pronósticos.</p>
         </section>
       </main>
       <div v-else class="loading">Cargando quiniela...</div>

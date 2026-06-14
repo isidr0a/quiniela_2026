@@ -536,6 +536,15 @@ select {
   color: var(--green-2);
 }
 
+.empty-state {
+  margin: 0;
+  padding: 16px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  background: #fff;
+}
+
 @media (max-width: 980px) {
   .topbar,
   .section-head,
@@ -737,5 +746,115 @@ select {
 
   .ranking-table td:nth-child(5)::before {
     content: "Resultado";
+  }
+
+  .participant-table {
+    border: 0;
+    overflow: visible;
+  }
+
+  .participant-table table,
+  .participant-table thead,
+  .participant-table tbody,
+  .participant-table tr,
+  .participant-table th,
+  .participant-table td {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .participant-table table {
+    background: transparent;
+  }
+
+  .participant-table thead {
+    display: none;
+  }
+
+  .participant-table tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  .participant-table tr {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    gap: 8px 10px;
+    align-items: start;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  .participant-table td {
+    border: 0;
+    padding: 0;
+    white-space: normal;
+  }
+
+  .participant-table td:nth-child(1) {
+    grid-row: 1 / 4;
+    align-self: stretch;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: var(--surface-2);
+    font-weight: 900;
+  }
+
+  .participant-table td:nth-child(2) {
+    min-width: 0;
+    font-weight: 900;
+    overflow-wrap: anywhere;
+  }
+
+  .participant-table td:nth-child(3) {
+    grid-column: 2 / -1;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .participant-table td:nth-child(3)::before {
+    content: "Sede ";
+    color: var(--text);
+  }
+
+  .participant-table td:nth-child(4),
+  .participant-table td:nth-child(5) {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    width: auto;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .participant-table td:nth-child(4)::before {
+    content: "Pron.";
+  }
+
+  .participant-table td:nth-child(5)::before {
+    content: "Res.";
+  }
+
+  .participant-table td:nth-child(6) {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    font-size: 20px;
+  }
+
+  .participant-table td:nth-child(6)::after {
+    content: " pts";
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 800;
   }
 }
