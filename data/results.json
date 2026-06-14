@@ -1,0 +1,77 @@
+{
+  "updatedAt": "2026-06-14T18:20:00-04:00",
+  "results": [
+    {
+      "matchNumber": 1,
+      "homeTeam": "Mexico",
+      "awayTeam": "South Africa",
+      "home": 2,
+      "away": 0,
+      "status": "finished",
+      "source": "Resultados verificados"
+    },
+    {
+      "matchNumber": 2,
+      "homeTeam": "South Korea",
+      "awayTeam": "Czech Republic",
+      "home": 2,
+      "away": 1,
+      "status": "finished",
+      "source": "Resultados verificados"
+    },
+    {
+      "matchNumber": 3,
+      "homeTeam": "Canada",
+      "awayTeam": "Bosnia y Herzegovina",
+      "home": 1,
+      "away": 1,
+      "status": "finished",
+      "source": "Resultados verificados"
+    },
+    {
+      "matchNumber": 4,
+      "homeTeam": "USA",
+      "awayTeam": "Paraguay",
+      "home": 4,
+      "away": 1,
+      "status": "finished",
+      "source": "Resultados verificados"
+    },
+    {
+      "matchNumber": 5,
+      "homeTeam": "Qatar",
+      "awayTeam": "Switzerland",
+      "home": 1,
+      "away": 1,
+      "status": "finished",
+      "source": "Resultados verificados"
+    },
+    {
+      "matchNumber": 6,
+      "homeTeam": "Brazil",
+      "awayTeam": "Morocco",
+      "home": 1,
+      "away": 1,
+      "status": "finished",
+      "source": "Resultados verificados"
+    },
+    {
+      "matchNumber": 7,
+      "homeTeam": "Haiti",
+      "awayTeam": "Scotland",
+      "home": 0,
+      "away": 1,
+      "status": "finished",
+      "source": "Resultados verificados"
+    },
+    {
+      "matchNumber": 8,
+      "homeTeam": "Australia",
+      "awayTeam": "Turkiye",
+      "home": 2,
+      "away": 0,
+      "status": "finished",
+      "source": "Resultados verificados"
+    }
+  ]
+}

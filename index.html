@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiniela Mundial 2026</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <div id="app" v-cloak>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Mundial 2026</p>
+          <h1>Quiniela Mundialista</h1>
+        </div>
+        <div class="api-panel">
+          <div>
+            <strong>{{ completedMatches }}</strong>
+            <span>partidos con resultado</span>
+          </div>
+          <button class="icon-button" type="button" @click="refreshResults(true)" :disabled="apiStatus.loading" title="Actualizar desde API">
+            <span aria-hidden="true">↻</span>
+          </button>
+        </div>
+      </header>
+
+      <main v-if="db" class="layout">
+        <section class="summary-strip">
+          <div>
+            <span>Participantes</span>
+            <strong>{{ db.metadata.counts.participants }}</strong>
+          </div>
+          <div>
+            <span>Partidos</span>
+            <strong>{{ db.metadata.counts.matches }}</strong>
+          </div>
+          <div>
+            <span>Jornadas</span>
+            <strong>{{ journeyDates.length }}</strong>
+          </div>
+          <div>
+            <span>Sedes</span>
+            <strong>{{ db.metadata.counts.venues }}</strong>
+          </div>
+        </section>
+
+        <section class="source-line">
+          <span>Resultados</span>
+          <strong v-if="apiStatus.loading">Actualizando...</strong>
+          <strong v-else>{{ formatDateTime(apiStatus.loadedAt) }}</strong>
+          <em v-if="apiStatus.fromCache">cache local</em>
+          <em v-if="apiStatus.error">{{ apiStatus.error }}</em>
+        </section>
+
+        <nav class="tabs" aria-label="Vistas">
+          <button :class="{ active: activeTab === 'matches' }" @click="activeTab = 'matches'">Partidos</button>
+          <button :class="{ active: activeTab === 'ranking' }" @click="activeTab = 'ranking'">Tabla</button>
+          <button :class="{ active: activeTab === 'journeys' }" @click="activeTab = 'journeys'">Jornadas</button>
+          <button :class="{ active: activeTab === 'participant' }" @click="activeTab = 'participant'">Participante</button>
+        </nav>
+
+        <section v-show="activeTab === 'ranking'" class="panel">
+          <div class="section-head">
+            <h2>Clasificación Actual</h2>
+            <p>3 puntos marcador exacto, 1 punto resultado correcto.</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Participante</th>
+                  <th>Pts</th>
+                  <th>Exactos</th>
+                  <th>Resultado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in ranking" :key="row.id">
+                  <td class="pos">{{ row.position }}</td>
+                  <td>{{ row.name }}</td>
+                  <td class="score">{{ row.total }}</td>
+                  <td>{{ row.exact }}</td>
+                  <td>{{ row.resultOnly }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section v-show="activeTab === 'journeys'" class="panel">
+          <div class="section-head">
+            <h2>Clasificación Por Jornada</h2>
+            <p>Puntos obtenidos por fecha de juego.</p>
+          </div>
+          <div class="journey-grid">
+            <article v-for="journey in rankingByMatchday" :key="journey.day" class="journey">
+              <h3>Jornada {{ journey.day }} · {{ journey.label }}</h3>
+              <p>{{ journey.matchCount }} partidos</p>
+              <ol>
+                <li v-for="row in journey.rows" :key="row.id" :class="{ leader: row.isTop }">
+                  <span>
+                    <b>{{ row.position }}. {{ row.name }}</b>
+                    <small>{{ row.exact }} exactos · {{ row.resultOnly }} resultado</small>
+                  </span>
+                  <strong><em v-if="row.isTop" title="Mayor puntaje de la jornada">🐐</em>{{ row.total }} pts</strong>
+                </li>
+              </ol>
+            </article>
+          </div>
+        </section>
+
+        <section v-show="activeTab === 'matches' || activeTab === 'predictions'" class="workspace">
+          <aside class="match-list panel">
+            <div class="section-head compact">
+              <h2>Partidos</h2>
+            </div>
+            <div class="filters">
+              <input v-model="search" type="search" placeholder="Buscar partido, sede o equipo" />
+              <select v-model="selectedGroup">
+                <option value="all">Todos los grupos</option>
+                <option v-for="group in groups" :key="group" :value="group">Grupo {{ group }}</option>
+              </select>
+              <select v-model="selectedMatchday">
+                <option value="all">Todas las jornadas</option>
+                <option value="1">Jornada 1</option>
+                <option value="2">Jornada 2</option>
+                <option value="3">Jornada 3</option>
+              </select>
+            </div>
+            <button v-for="match in filteredMatches" :key="match.id" class="match-row" :class="{ active: selectedMatch && selectedMatch.id === match.id }" @click="selectMatch(match)">
+              <span class="match-number">{{ match.number }}</span>
+              <span class="teams"><b>{{ flag(match.homeTeamId) }} {{ match.homeTeam }}</b><b>{{ flag(match.awayTeamId) }} {{ match.awayTeam }}</b></span>
+              <span class="mini-score" :class="statusClass(match)">{{ displayScore(match) }}</span>
+            </button>
+          </aside>
+
+          <section v-if="selectedMatch" class="panel match-detail">
+            <div class="match-hero">
+              <div>
+                <span class="badge">Grupo {{ selectedMatch.group }} · Jornada {{ selectedMatch.matchday }}</span>
+                <h2>{{ flag(selectedMatch.homeTeamId) }} {{ selectedMatch.homeTeam }} vs {{ flag(selectedMatch.awayTeamId) }} {{ selectedMatch.awayTeam }}</h2>
+                <p>{{ formatDate(selectedMatch) }} · {{ selectedMatch.time }} · {{ selectedMatch.venue }}, {{ selectedMatch.city }}</p>
+              </div>
+              <div class="live-score" :class="statusClass(selectedMatch)">
+                <span>Resultado</span>
+                <strong>{{ displayScore(selectedMatch) }}</strong>
+              </div>
+            </div>
+
+            <div class="section-head inline">
+              <div>
+                <h2>Pronósticos Del Partido</h2>
+                <p>{{ matchPredictions.length }} pronósticos cargados.</p>
+              </div>
+              <select v-model="selectedParticipantId">
+                <option value="all">Todos</option>
+                <option v-for="participant in db.participants" :key="participant.id" :value="participant.id">{{ participant.name }}</option>
+              </select>
+            </div>
+
+            <div class="prediction-grid">
+              <article v-for="row in matchPredictions" :key="row.id" class="prediction-card" :class="`points-${row.points}`">
+                <div>
+                  <strong>{{ row.participant.name }}</strong>
+                </div>
+                <b>{{ row.predictedHome }} - {{ row.predictedAway }}</b>
+                <em>{{ row.points }} pts</em>
+              </article>
+            </div>
+          </section>
+        </section>
+
+        <section v-show="activeTab === 'participant'" class="panel">
+          <div class="section-head inline">
+            <div>
+              <h2>Detalle Por Participante</h2>
+              <p>Pronósticos, resultado API y puntos por partido.</p>
+            </div>
+            <select v-model="selectedParticipantId">
+              <option value="all">Selecciona participante</option>
+              <option v-for="participant in db.participants" :key="participant.id" :value="participant.id">{{ participant.name }}</option>
+            </select>
+          </div>
+          <div v-if="participantDetail" class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nº</th>
+                  <th>Partido</th>
+                  <th>Sede</th>
+                  <th>Pronóstico</th>
+                  <th>Resultado</th>
+                  <th>Pts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in participantDetail.rows" :key="row.id">
+                  <td>{{ row.match.number }}</td>
+                  <td>{{ flag(row.match.homeTeamId) }} {{ row.match.homeTeam }} vs {{ flag(row.match.awayTeamId) }} {{ row.match.awayTeam }}</td>
+                  <td>{{ row.match.city }}</td>
+                  <td>{{ row.predictedHome }} - {{ row.predictedAway }}</td>
+                  <td>{{ displayScore(row.match) }}</td>
+                  <td class="score">{{ row.points }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+      <div v-else class="loading">Cargando quiniela...</div>
+    </div>
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
