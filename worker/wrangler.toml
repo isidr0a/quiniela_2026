@@ -1,0 +1,15 @@
+name = "quiniela-2026-results"
+main = "src/index.js"
+compatibility_date = "2026-06-14"
+
+[vars]
+FOOTBALL_DATA_COMPETITION = "WC"
+CACHE_TTL_SECONDS = "120"
+
+[[ratelimits]]
+name = "RESULTS_RATE_LIMITER"
+namespace_id = "2026001"
+
+  [ratelimits.simple]
+  limit = 60
+  period = 60

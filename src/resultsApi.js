@@ -179,6 +179,21 @@ async function fetchTheSportsDb(config) {
     .filter((event) => event.homeTeam && event.awayTeam);
 }
 
+async function fetchFootballDataWorker(config) {
+  if (!config.footballDataWorkerUrl) return [];
+  const data = await fetchJson(config.footballDataWorkerUrl);
+  const matches = Array.isArray(data?.matches) ? data.matches : [];
+  return matches.map((match) => ({
+    homeTeam: match.homeTeam,
+    awayTeam: match.awayTeam,
+    home: numericScore(match.home),
+    away: numericScore(match.away),
+    status: match.status || "scheduled",
+    source: data.source || match.source || "Football-Data Worker",
+    updatedAt: match.updatedAt || data.updatedAt || null,
+  }));
+}
+
 async function fetchFootballData(config) {
   if (!config.footballDataToken) return [];
   const url = `https://api.football-data.org/v4/competitions/${config.footballDataCompetition}/matches`;
@@ -197,7 +212,7 @@ async function fetchFootballData(config) {
   }));
 }
 
-const CACHE_KEY = "quiniela:api-results:v4";
+const CACHE_KEY = "quiniela:api-results:v6";
 const PENDING_CACHE_TTL_MS = 5 * 60 * 1000;
 const FINISHED_CACHE_TTL_MS = 2 * 24 * 60 * 60 * 1000;
 
@@ -270,6 +285,7 @@ export async function loadApiResults(matches, config, options = {}) {
   const allResults = [];
 
   const sources = [
+    ["Football-Data Worker", () => fetchFootballDataWorker(config)],
     ["Football-Data.org", () => fetchFootballData(config)],
     ["TheSportsDB", () => fetchTheSportsDb(config)],
     ["Resultados verificados", () => fetchLocalResults()],

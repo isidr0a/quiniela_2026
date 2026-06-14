@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-14T18:20:00-04:00",
+  "updatedAt": "2026-06-14T15:03:57-04:00",
   "results": [
     {
       "matchNumber": 1,
@@ -70,6 +70,15 @@
       "awayTeam": "Turkiye",
       "home": 2,
       "away": 0,
+      "status": "finished",
+      "source": "Resultados verificados"
+    },
+    {
+      "matchNumber": 9,
+      "homeTeam": "Germany",
+      "awayTeam": "Curacao",
+      "home": 7,
+      "away": 1,
       "status": "finished",
       "source": "Resultados verificados"
     }
