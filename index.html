@@ -64,7 +64,7 @@
             <h2>Clasificación Actual</h2>
             <p>3 puntos marcador exacto, 1 punto resultado correcto.</p>
           </div>
-          <div class="table-wrap">
+          <div class="table-wrap ranking-table">
             <table>
               <thead>
                 <tr>
@@ -110,7 +110,7 @@
           </div>
         </section>
 
-        <section v-show="activeTab === 'matches' || activeTab === 'predictions'" class="workspace">
+        <section v-show="activeTab === 'matches' || activeTab === 'predictions'" class="workspace" :class="{ 'drawer-open': isMatchDrawerOpen }">
           <aside class="match-list panel">
             <div class="section-head compact">
               <h2>Partidos</h2>
@@ -135,7 +135,10 @@
             </button>
           </aside>
 
-          <section v-if="selectedMatch" class="panel match-detail">
+          <button v-if="selectedMatch && isMatchDrawerOpen" class="drawer-backdrop" type="button" aria-label="Cerrar detalle" @click="closeMatchDrawer"></button>
+
+          <section v-if="selectedMatch" class="panel match-detail" :class="{ open: isMatchDrawerOpen }">
+            <button class="drawer-back" type="button" @click="closeMatchDrawer">← Volver</button>
             <div class="match-hero">
               <div>
                 <span class="badge">Grupo {{ selectedMatch.group }} · Jornada {{ selectedMatch.matchday }}</span>

@@ -104,6 +104,7 @@ createApp({
     const selectedGroup = ref("all");
     const selectedMatchday = ref("all");
     const activeTab = ref("matches");
+    const isMatchDrawerOpen = ref(false);
 
     const participantsById = computed(() => Object.fromEntries((db.value?.participants || []).map((p) => [p.id, p])));
     const matchesById = computed(() => Object.fromEntries((db.value?.matches || []).map((m) => [m.id, m])));
@@ -221,9 +222,19 @@ createApp({
       return result && result.home !== null && result.away !== null ? "finished" : "pending";
     }
 
+    function isMobileViewport() {
+      return window.matchMedia("(max-width: 980px)").matches;
+    }
+
     function selectMatch(match) {
       selectedMatchId.value = match.id;
       activeTab.value = "predictions";
+      isMatchDrawerOpen.value = isMobileViewport();
+    }
+
+    function closeMatchDrawer() {
+      isMatchDrawerOpen.value = false;
+      activeTab.value = "matches";
     }
 
     async function refreshResults(forceRefresh = false) {
@@ -257,6 +268,7 @@ createApp({
       activeTab,
       apiStatus,
       completedMatches,
+      closeMatchDrawer,
       db,
       displayScore,
       filteredMatches,
@@ -265,6 +277,7 @@ createApp({
       formatDateTime,
       journeyDates,
       groups,
+      isMatchDrawerOpen,
       matchPredictions,
       participantDetail,
       participantsById,
