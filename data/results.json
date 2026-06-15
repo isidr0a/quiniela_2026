@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-14T15:03:57-04:00",
+  "updatedAt": "2026-06-15T01:09:24Z",
   "results": [
     {
       "matchNumber": 1,
@@ -81,6 +81,15 @@
       "away": 1,
       "status": "finished",
       "source": "Resultados verificados"
+    },
+    {
+      "matchNumber": 11,
+      "homeTeam": "Ivory Coast",
+      "awayTeam": "Ecuador",
+      "home": 1,
+      "away": 0,
+      "status": "finished",
+      "source": "Football-Data Worker"
     }
   ]
 }

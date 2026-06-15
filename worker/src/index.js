@@ -9,6 +9,27 @@ const CORS_HEADERS = {
 
 const RATE_LIMIT_PERIOD_SECONDS = 60;
 
+const TEAM_NAME_ALIASES = {
+  "bosnia-herzegovina": "Bosnia y Herzegovina",
+  "brazil": "Brasil",
+  "curacao": "Curazao",
+  "czechia": "República Checa",
+  "czech republic": "República Checa",
+  "germany": "Alemania",
+  "haiti": "Haití",
+  "ivory coast": "Costa de Marfil",
+  "mexico": "México",
+  "morocco": "Marruecos",
+  "qatar": "Catar",
+  "scotland": "Escocia",
+  "south africa": "Sudáfrica",
+  "south korea": "República de Corea",
+  "switzerland": "Suiza",
+  "turkey": "Turquía",
+  "turkiye": "Turquía",
+  "united states": "Estados Unidos",
+};
+
 function jsonResponse(payload, init = {}) {
   return new Response(JSON.stringify(payload, null, 2), {
     ...init,
@@ -50,10 +71,25 @@ function numericScore(value) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function normalizeKey(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function normalizeTeamName(value) {
+  const key = normalizeKey(value);
+  return TEAM_NAME_ALIASES[key] || value || "";
+}
+
 function mapFootballDataMatch(match) {
   return {
-    homeTeam: match.homeTeam?.name || "",
-    awayTeam: match.awayTeam?.name || "",
+    homeTeam: normalizeTeamName(match.homeTeam?.name),
+    awayTeam: normalizeTeamName(match.awayTeam?.name),
     home: numericScore(match.score?.fullTime?.home),
     away: numericScore(match.score?.fullTime?.away),
     status: match.status === "FINISHED" ? "finished" : "scheduled",

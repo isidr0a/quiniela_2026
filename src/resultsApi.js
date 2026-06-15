@@ -212,7 +212,7 @@ async function fetchFootballData(config) {
   }));
 }
 
-const CACHE_KEY = "quiniela:api-results:v6";
+const CACHE_KEY = "quiniela:api-results:v7";
 const PENDING_CACHE_TTL_MS = 5 * 60 * 1000;
 const FINISHED_CACHE_TTL_MS = 2 * 24 * 60 * 60 * 1000;
 
