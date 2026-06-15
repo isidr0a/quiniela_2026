@@ -12,6 +12,7 @@ const RATE_LIMIT_PERIOD_SECONDS = 60;
 const TEAM_NAME_ALIASES = {
   "bosnia-herzegovina": "Bosnia y Herzegovina",
   "brazil": "Brasil",
+  "cape verde islands": "Cabo Verde",
   "curacao": "Curazao",
   "czechia": "República Checa",
   "czech republic": "República Checa",

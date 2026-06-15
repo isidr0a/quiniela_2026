@@ -12,6 +12,7 @@ const TEAM_ALIASES = {
   "brasil": "brasil",
   "cabo verde": "cabo-verde",
   "cape verde": "cabo-verde",
+  "cape verde islands": "cabo-verde",
   "canada": "canada",
   "catar": "qatar",
   "colombia": "colombia",
