@@ -10,6 +10,7 @@ const CORS_HEADERS = {
 const RATE_LIMIT_PERIOD_SECONDS = 60;
 
 const TEAM_NAME_ALIASES = {
+  "algeria": "Argelia",
   "bosnia-herzegovina": "Bosnia y Herzegovina",
   "brazil": "Brasil",
   "cape verde islands": "Cabo Verde",
